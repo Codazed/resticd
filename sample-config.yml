@@ -1,0 +1,41 @@
+global:
+  # restic_bin: /custom/path/to/restic
+  restic_cache_dir: $HOME/.cache/resticd
+  restic_tmp_dir: /tmp/resticd
+  # b2_account_id: Default b2 account id
+  # b2_account_key: Default b2 account key
+
+daemon:
+  auto_initialize_repos: true # Currently does nothing
+
+backends:
+  b2-test:
+    type: b2
+    bucket: bucket-name
+
+  filesystem-001:
+    type: filesystem
+    path: /path/to/filesystem/backend
+
+repositories:
+  alpha:
+    backend: b2-test
+    path: /path/inside/backend # / should work if you just want the root
+    password: repository!password
+    retention_policy: # Yeah this currently does nothing too
+      last: 4
+
+jobs:
+  test-job:
+    path: /path/you/want/to/backup
+    schedule: midnight
+    repository: alpha
+
+  job2-electric-boogaloo:
+    path: /path/to/another/folder/you/want/to/backup
+    schedule: midnight
+    repository: alpha
+
+# These are all defined with cron syntax
+schedules:
+  midnight: 0 0 * * *
